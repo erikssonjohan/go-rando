@@ -48,11 +48,11 @@
 //
 // Thanks to Sebastian Frith for his Illustrator prowess!
 //
-// Big thanks to Kate McDowell, who suggested "Rando" as part 
+// Big thanks to Kate McDowell, who suggested "Rando" as part
 // of the title!
 //
-// And special thanks to Filippo Lorenzin, curator of the 
-// Blinding Pleasures exhibition for all his help and support 
+// And special thanks to Filippo Lorenzin, curator of the
+// Blinding Pleasures exhibition for all his help and support
 // for this work.
 //
 //
@@ -98,6 +98,8 @@ var reactionLabelsDE = ["Gefällt mir","Love","Haha","Wow","Traurig","Wütend"];
 var reactionLabelsES = ["Me gusta","Me encanta","Me divierte","Me asombra","Me entristece","Me enoja"];
 var reactionLabelsPT = ["Curtir","Amei","Haha","Uau","Triste","Grr"];
 var reactionLabelsIT = ["Mi piace","Love","Ahah","Wow","Sigh","Grrr"];
+var reactionLabelsSV = ["Gilla","Älska","Haha","Wow","Ledsen","Arg"];
+
 
 var pickingTextEN = "Picking...";
 var pickingTextFR = "Sélection...";
@@ -105,21 +107,23 @@ var pickingTextDE = "Auswählen...";
 var pickingTextES = "Selección...";
 var pickingTextPT = "Seleção...";
 var pickingTextIT = "Selezione...";
+var pickingTextSV = "Väljer...";
+
 
 
 function main() {
     var startURL = window.location.href;
 
-    // Firefox/Safari Extensions/Userscripts don't allow 
+    // Firefox/Safari Extensions/Userscripts don't allow
     // excludes in the URL match, so we do it here.
     if(IS_SAFARI_OR_FIREFOX_ADDON) {
-        if(startURL.contains("ai.php") || 
+        if(startURL.contains("ai.php") ||
            startURL.contains("/ajax/") ||
            startURL.contains("/dialog/") ||
            startURL.contains("/connect/") ||
            startURL.contains("/plugins/") ||
            startURL.contains("/xti.php")
-           ) return; 
+           ) return;
     }
 
     // console reporting
@@ -129,12 +133,12 @@ function main() {
     // setup jQuery on j to avoid any possible conflicts
     j = jQuery.noConflict();
 
-    // determine language. 
+    // determine language.
     LANG = j('html').attr('lang');
 
     if(!(LANG == "en" || LANG == "fr" || LANG == "de" ||
-         LANG == "es" || LANG == "pt" || LANG == "it")) {
-        console.log("Go Rando --> unsupported language detected ("+LANG+")"); 
+         LANG == "es" || LANG == "pt" || LANG == "it" || LANG == "sv")) {
+        console.log("Go Rando --> unsupported language detected ("+LANG+")");
         console.log("Go Rando --> defaulting to English");
         LANG = "en";
     }
@@ -156,7 +160,7 @@ function main() {
 
     observer.observe(watchNode, { childList: true } );
 
-	// run a few times for each insertion to catch 
+	// run a few times for each insertion to catch
 	// slower-loading nodes
     function delayedSetup(t) {
         setTimeout(function() {
@@ -165,7 +169,7 @@ function main() {
         }, t);
     }
 }
- 
+
 // find the correct Like buttons and attach an obfuscator
 function setupReactionsBlock(n) {
     n.
@@ -203,14 +207,17 @@ function attachReactionObfuscator(n) {
     } else if(LANG == "it") {
         reactionLabels = reactionLabelsIT;
         pickingText = pickingTextIT;
+    } else if(LANG == "sv") {
+        reactionLabels = reactionLabelsSV;
+        pickingText = pickingTextSV;
     }
 
     likeText = reactionLabels[0];
 
-    n.click(function(e) { 
+    n.click(function(e) {
 
         var likeON = false;
-        if(n.hasClass('UFILinkBright')) likeON = true; 
+        if(n.hasClass('UFILinkBright')) likeON = true;
 
         if(!likeON) {
 
@@ -235,7 +242,7 @@ function attachReactionObfuscator(n) {
                     	if(r != likeText) t.click();
 						lp.find('.UFILikeLink').show();
 						lp.find('.gr_picking').remove();
-                    } 
+                    }
                     else {
 						lp.find('.UFILikeLink').show();
 						lp.find('.gr_picking').remove();
@@ -255,7 +262,7 @@ function attachReactionObfuscator(n) {
 String.prototype.contains = function(it) { return this.indexOf(it) != -1; };
 
 
-// pasted jQuery 3.1.1 slim minified from 
+// pasted jQuery 3.1.1 slim minified from
 // https://code.jquery.com/jquery-3.1.1.slim.min.js
 
 
@@ -269,4 +276,3 @@ holdReady:function(a){a?r.readyWait++:r.ready(!0)},ready:function(a){(a===!0?--r
 
 // launch with the main once the script loads
 main();
-
